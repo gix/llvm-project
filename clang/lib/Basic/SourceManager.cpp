@@ -26,6 +26,7 @@
 #include "llvm/Support/Allocator.h"
 #include "llvm/Support/Capacity.h"
 #include "llvm/Support/Compiler.h"
+#include "llvm/Support/ConvertUTF.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/MathExtras.h"
@@ -93,6 +94,17 @@ void ContentCache::replaceBuffer(const llvm::MemoryBuffer *B, bool DoNotFree) {
     delete Buffer.getPointer();
   Buffer.setPointer(B);
   Buffer.setInt((B && DoNotFree) ? DoNotFreeFlag : 0);
+}
+
+static llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>>
+convertUTF16LEToUTF8(const llvm::MemoryBuffer *B) {
+  StringRef Str = B->getBuffer();
+  ArrayRef<char> Data(Str.data(), Str.size());
+  std::string Tmp;
+  if (!llvm::convertUTF16ToUTF8String(Data, Tmp))
+    return nullptr;
+
+  return llvm::MemoryBuffer::getMemBufferCopy(Tmp, B->getBufferIdentifier());
 }
 
 const char *ContentCache::getInvalidBOM(StringRef BufStr) {
@@ -210,9 +222,22 @@ const llvm::MemoryBuffer *ContentCache::getBuffer(DiagnosticsEngine &Diag,
   }
 
   // If the buffer is valid, check to see if it has a UTF Byte Order Mark
-  // (BOM).  We only support UTF-8 with and without a BOM right now.  See
-  // http://en.wikipedia.org/wiki/Byte_order_mark for more information.
+  // (BOM).  We only support UTF-8 (with and without a BOM) or UTF-16 LE with
+  // BOM right now.  See http://en.wikipedia.org/wiki/Byte_order_mark for more
+  // information.
   StringRef BufStr = Buffer.getPointer()->getBuffer();
+
+  const char *IsUTF16LE = llvm::StringSwitch<const char *>(BufStr)
+    .StartsWith("\xFF\xFE", "UTF-16 (LE)")
+    .Default(nullptr);
+  if (IsUTF16LE) {
+      BufferOrError = convertUTF16LEToUTF8(Buffer.getPointer());
+      if (BufferOrError) {
+        Buffer.setPointer(BufferOrError->release());
+        BufStr = Buffer.getPointer()->getBuffer();
+     }
+  }
+
   const char *InvalidBOM = getInvalidBOM(BufStr);
 
   if (InvalidBOM) {
