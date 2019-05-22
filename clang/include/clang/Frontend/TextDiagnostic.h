@@ -51,7 +51,8 @@ public:
   static void printDiagnosticLevel(raw_ostream &OS,
                                    DiagnosticsEngine::Level Level,
                                    bool ShowColors,
-                                   bool CLFallbackMode = false);
+                                   bool CLFallbackMode = false,
+                                   StringRef Opt = "");
 
   /// Pretty-print a diagnostic message to a raw_ostream.
   ///

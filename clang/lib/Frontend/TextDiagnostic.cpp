@@ -676,6 +676,14 @@ void TextDiagnostic::emitDiagnosticMessage(
     DiagOrStoredDiag D) {
   uint64_t StartOfLocationInfo = OS.tell();
 
+  StringRef Opt;
+  if (DiagOpts->getFormat() == DiagnosticOptions::MSVC) {
+    if (auto DD = D.dyn_cast<const Diagnostic*>())
+      Opt = DiagnosticIDs::getWarningOptionForDiag(DD->getID());
+    else if (auto SD = D.dyn_cast<const StoredDiagnostic*>())
+      Opt = DiagnosticIDs::getWarningOptionForDiag(SD->getID());
+  }
+
   // Emit the location of this particular diagnostic.
   if (Loc.isValid())
     emitDiagnosticLoc(Loc, PLoc, Level, Ranges);
@@ -685,7 +693,7 @@ void TextDiagnostic::emitDiagnosticMessage(
 
   if (DiagOpts->ShowLevel)
     printDiagnosticLevel(OS, Level, DiagOpts->ShowColors,
-                         DiagOpts->CLFallbackMode);
+                         DiagOpts->CLFallbackMode, Opt);
   printDiagnosticMessage(OS,
                          /*IsSupplemental*/ Level == DiagnosticsEngine::Note,
                          Message, OS.tell() - StartOfLocationInfo,
@@ -696,7 +704,8 @@ void TextDiagnostic::emitDiagnosticMessage(
 TextDiagnostic::printDiagnosticLevel(raw_ostream &OS,
                                      DiagnosticsEngine::Level Level,
                                      bool ShowColors,
-                                     bool CLFallbackMode) {
+                                     bool CLFallbackMode,
+                                     StringRef Opt) {
   if (ShowColors) {
     // Print diagnostic category in bold and color
     switch (Level) {
@@ -726,6 +735,9 @@ TextDiagnostic::printDiagnosticLevel(raw_ostream &OS,
   // there is an "error:" in the output.
   if (CLFallbackMode)
     OS << "(clang)";
+
+  if (!Opt.empty())
+    OS << ' ' << Opt;
 
   OS << ": ";
 
