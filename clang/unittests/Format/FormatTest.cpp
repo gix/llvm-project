@@ -12731,6 +12731,22 @@ TEST_F(FormatTest, ConfigurableSpaceAroundPointerQualifiers) {
   verifyQualifierSpaces("void * const *x = NULL;", PAS_Right, SAPQ_Both);
   verifyQualifierSpaces("void * const * x = NULL;", PAS_Middle, SAPQ_Both);
 
+  verifyQualifierSpaces("Foo::operator void const*();", PAS_Left, SAPQ_Default);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Right, SAPQ_Default);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Middle, SAPQ_Default);
+
+  verifyQualifierSpaces("Foo::operator void const*();", PAS_Left, SAPQ_Before);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Right, SAPQ_Before);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Middle, SAPQ_Before);
+
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Left, SAPQ_After);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Right, SAPQ_After);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Middle, SAPQ_After);
+
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Left, SAPQ_Both);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Right, SAPQ_Both);
+  verifyQualifierSpaces("Foo::operator void const *();", PAS_Middle, SAPQ_Both);
+
 #undef verifyQualifierSpaces
 
   FormatStyle Spaces = getLLVMStyle();
@@ -18374,6 +18390,10 @@ TEST_F(FormatTest, OperatorSpacing) {
   verifyFormat("Foo::operator void **();", Style);
   verifyFormat("Foo::operator void *&();", Style);
   verifyFormat("Foo::operator void *&&();", Style);
+  verifyFormat("Foo::operator void const *();", Style);
+  verifyFormat("Foo::operator void const **();", Style);
+  verifyFormat("Foo::operator void const *&();", Style);
+  verifyFormat("Foo::operator void const *&&();", Style);
   verifyFormat("Foo::operator()(void *);", Style);
   verifyFormat("Foo::operator*(void *);", Style);
   verifyFormat("Foo::operator*();", Style);
@@ -18395,6 +18415,7 @@ TEST_F(FormatTest, OperatorSpacing) {
 
   verifyFormat("Foo::operator&();", Style);
   verifyFormat("Foo::operator void &();", Style);
+  verifyFormat("Foo::operator void const &();", Style);
   verifyFormat("Foo::operator()(void &);", Style);
   verifyFormat("Foo::operator&(void &);", Style);
   verifyFormat("Foo::operator&();", Style);
@@ -18403,6 +18424,7 @@ TEST_F(FormatTest, OperatorSpacing) {
   verifyFormat("Foo::operator&&();", Style);
   verifyFormat("Foo::operator**();", Style);
   verifyFormat("Foo::operator void &&();", Style);
+  verifyFormat("Foo::operator void const &&();", Style);
   verifyFormat("Foo::operator()(void &&);", Style);
   verifyFormat("Foo::operator&&(void &&);", Style);
   verifyFormat("Foo::operator&&();", Style);
@@ -18423,6 +18445,11 @@ TEST_F(FormatTest, OperatorSpacing) {
   verifyFormat("Foo::operator void*();", Style);
   verifyFormat("Foo::operator void**();", Style);
   verifyFormat("Foo::operator void*&();", Style);
+  verifyFormat("Foo::operator void*&&();", Style);
+  verifyFormat("Foo::operator void const*();", Style);
+  verifyFormat("Foo::operator void const**();", Style);
+  verifyFormat("Foo::operator void const*&();", Style);
+  verifyFormat("Foo::operator void const*&&();", Style);
   verifyFormat("Foo::operator/*comment*/ void*();", Style);
   verifyFormat("Foo::operator/*a*/ const /*b*/ void*();", Style);
   verifyFormat("Foo::operator/*a*/ volatile /*b*/ void*();", Style);
@@ -18444,6 +18471,7 @@ TEST_F(FormatTest, OperatorSpacing) {
 
   verifyFormat("Foo::operator&();", Style);
   verifyFormat("Foo::operator void&();", Style);
+  verifyFormat("Foo::operator void const&();", Style);
   verifyFormat("Foo::operator/*comment*/ void&();", Style);
   verifyFormat("Foo::operator/*a*/ const /*b*/ void&();", Style);
   verifyFormat("Foo::operator/*a*/ volatile /*b*/ void&();", Style);
@@ -18454,6 +18482,7 @@ TEST_F(FormatTest, OperatorSpacing) {
 
   verifyFormat("Foo::operator&&();", Style);
   verifyFormat("Foo::operator void&&();", Style);
+  verifyFormat("Foo::operator void const&&();", Style);
   verifyFormat("Foo::operator/*comment*/ void&&();", Style);
   verifyFormat("Foo::operator/*a*/ const /*b*/ void&&();", Style);
   verifyFormat("Foo::operator/*a*/ volatile /*b*/ void&&();", Style);
@@ -18489,6 +18518,7 @@ TEST_F(FormatTest, OperatorSpacing) {
 
   verifyFormat("Foo::operator&();", Style);
   verifyFormat("Foo::operator void &();", Style);
+  verifyFormat("Foo::operator void const &();", Style);
   verifyFormat("Foo::operator()(void &);", Style);
   verifyFormat("Foo::operator&(void &);", Style);
   verifyFormat("Foo::operator&();", Style);
@@ -18496,6 +18526,7 @@ TEST_F(FormatTest, OperatorSpacing) {
 
   verifyFormat("Foo::operator&&();", Style);
   verifyFormat("Foo::operator void &&();", Style);
+  verifyFormat("Foo::operator void const &&();", Style);
   verifyFormat("Foo::operator()(void &&);", Style);
   verifyFormat("Foo::operator&&(void &&);", Style);
   verifyFormat("Foo::operator&&();", Style);
