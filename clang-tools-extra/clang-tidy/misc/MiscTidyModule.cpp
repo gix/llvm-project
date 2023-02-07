@@ -25,6 +25,7 @@
 #include "RedundantExpressionCheck.h"
 #include "StaticAssertCheck.h"
 #include "ThrowByValueCatchByReferenceCheck.h"
+#include "TidyVariadicCallsCheck.h"
 #include "UnconventionalAssignOperatorCheck.h"
 #include "UniqueptrResetReleaseCheck.h"
 #include "UnusedAliasDeclsCheck.h"
@@ -66,6 +67,8 @@ public:
     CheckFactories.registerCheck<StaticAssertCheck>("misc-static-assert");
     CheckFactories.registerCheck<ThrowByValueCatchByReferenceCheck>(
         "misc-throw-by-value-catch-by-reference");
+    CheckFactories.registerCheck<TidyVariadicCallsCheck>(
+        "misc-tidy-variadic-calls");
     CheckFactories.registerCheck<UnconventionalAssignOperatorCheck>(
         "misc-unconventional-assign-operator");
     CheckFactories.registerCheck<UniqueptrResetReleaseCheck>(

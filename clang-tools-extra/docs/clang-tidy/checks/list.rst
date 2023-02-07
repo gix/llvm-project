@@ -256,6 +256,7 @@ Clang-Tidy Checks
    :doc:`misc-redundant-expression <misc/redundant-expression>`, "Yes"
    :doc:`misc-static-assert <misc/static-assert>`, "Yes"
    :doc:`misc-throw-by-value-catch-by-reference <misc/throw-by-value-catch-by-reference>`,
+   :doc:`misc-tidy-variadic-calls <misc-tidy-variadic-calls>`_, "Yes"
    :doc:`misc-unconventional-assign-operator <misc/unconventional-assign-operator>`,
    :doc:`misc-uniqueptr-reset-release <misc/uniqueptr-reset-release>`, "Yes"
    :doc:`misc-unused-alias-decls <misc/unused-alias-decls>`, "Yes"
