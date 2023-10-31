@@ -17,6 +17,7 @@ add_custom_command(
 add_custom_target(genconfusable DEPENDS Confusables.inc)
 
 add_clang_library(clangTidyMiscModule
+  CallBaseMethodWithAliasCheck.cpp
   ConstCorrectnessCheck.cpp
   CoroutineHostileRAIICheck.cpp
   DefinitionsInHeadersCheck.cpp

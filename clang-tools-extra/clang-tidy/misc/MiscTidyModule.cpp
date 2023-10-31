@@ -9,6 +9,7 @@
 #include "../ClangTidy.h"
 #include "../ClangTidyModule.h"
 #include "../ClangTidyModuleRegistry.h"
+#include "CallBaseMethodWithAliasCheck.h"
 #include "ConfusableIdentifierCheck.h"
 #include "ConstCorrectnessCheck.h"
 #include "CoroutineHostileRAIICheck.h"
@@ -69,6 +70,8 @@ public:
         "misc-throw-by-value-catch-by-reference");
     CheckFactories.registerCheck<TidyVariadicCallsCheck>(
         "misc-tidy-variadic-calls");
+    CheckFactories.registerCheck<CallBaseMethodWithAliasCheck>(
+        "call-base-with-alias");
     CheckFactories.registerCheck<UnconventionalAssignOperatorCheck>(
         "misc-unconventional-assign-operator");
     CheckFactories.registerCheck<UniqueptrResetReleaseCheck>(
